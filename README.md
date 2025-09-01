@@ -1,5 +1,7 @@
 # NeuroNet-AD: A Multimodal Deep Learning Framework for Multiclass Alzheimer’s Disease Diagnosis
 
+![Code Status](https://img.shields.io/badge/Code-Coming%20Soon-orange?style=for-the-badge)
+
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ## Overview
@@ -12,6 +14,7 @@ Alzheimer’s Disease (AD) is the most common form of dementia, severely impacti
 to achieve **multiclass classification** of Normal Control (NC), MCI, and AD with high accuracy:contentReference[oaicite:0]{index=0}.
 
 ---
+
 
 ## Key Features
 - **Convolutional Block Attention Module (CBAM):** Enhances ResNet-18 image backbone by focusing on informative spatial & channel-wise features.  
@@ -47,11 +50,6 @@ The NeuroNet-AD pipeline consists of four main modules:
 - **External Validation:** [OASIS-3 Dataset](https://www.oasis-brains.org/) – 921 images (704 NC, 19 MCI, 198 AD).  
 
 *Note: Access to ADNI/OASIS data requires registration and approval.*  
-
----
-
-## Implementation
-**Code will be released soon. Stay tuned!**  
 
 ---
 
