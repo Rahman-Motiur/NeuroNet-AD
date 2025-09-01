@@ -76,7 +76,7 @@ If you use this work, please cite:
 @article{rahman2025neuronetad,
   title   = {NeuroNet-AD: A Multimodal Deep Learning Framework for Multiclass Alzheimer’s Disease Diagnosis},
   author  = {Rahman, Saeka and Rahman, Md Motiur and Bhatt, Smriti and Sundararajan, Raji and Faezipour, Miad},
-  journal = {Bioengineering},
+  journal = {......},
   year    = {2025},
-  doi     = {10.3390/bioengineering1010000}
+  doi     = {.....}
 }
