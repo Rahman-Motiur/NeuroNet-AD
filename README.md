@@ -9,7 +9,7 @@ Alzheimer’s Disease (AD) is the most common form of dementia, severely impacti
 - **MRI images** (structural brain scans)  
 - **Clinical metadata** (psychological test scores, demographics, genetic biomarkers)  
 
-to achieve **multiclass classification** of Normal Control (NC), MCI, and AD with high accuracy:contentReference[oaicite:1]{index=1}.
+to achieve **multiclass classification** of Normal Control (NC), MCI, and AD with high accuracy:contentReference[oaicite:0]{index=0}.
 
 ---
 
@@ -26,7 +26,7 @@ to achieve **multiclass classification** of Normal Control (NC), MCI, and AD wit
 ## Performance Highlights
 - **ADNI1 Dataset:**  
   - 98.68% accuracy (NC vs. MCI vs. AD)  
-  - Outperforms state-of-the-art models such as MADDi, MedBLIP, and hybrid CNN approaches:contentReference[oaicite:2]{index=2}  
+  - Outperforms state-of-the-art models such as MADDi, MedBLIP, and hybrid CNN approaches:contentReference[oaicite:1]{index=1}  
 - **External OASIS-3 Validation:**  
   - 94.10% accuracy despite demographic and acquisition variability  
 - **Ablation Studies:** Each component (CBAM, MGCA, feature selection, text encoder) demonstrated significant improvements in model performance.
@@ -51,11 +51,7 @@ The NeuroNet-AD pipeline consists of four main modules:
 ---
 
 ## Implementation
-- **Framework:** PyTorch  
-- **Optimizer:** Adam (lr=0.001, weight decay=1e-5)  
-- **Loss Function:** Cross-Entropy (multiclass)  
-- **Regularization:** Dropout (p=0.5), early stopping (patience=20)  
-- **Augmentation:** Random flips, ±10° rotations, intensity scaling  
+**Code will be released soon. Stay tuned!**  
 
 ---
 
@@ -67,6 +63,11 @@ The NeuroNet-AD pipeline consists of four main modules:
 | Hybrid CNN    | ADNI    | MRI + Clinical | 98.4 (binary) |
 | **NeuroNet-AD** | ADNI    | MRI + Clinical Metadata | **98.68 (multiclass)** |
 | **NeuroNet-AD** | OASIS-3 | MRI + Clinical Metadata | **94.10 (multiclass)** |
+
+---
+
+## Paper
+📄 Read the full paper here: [NeuroNet-AD: A Multimodal Deep Learning Framework for Multiclass Alzheimer’s Disease Diagnosis](https://doi.org/10.3390/bioengineering1010000)
 
 ---
 
