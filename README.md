@@ -4,6 +4,10 @@
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
+## Paper
+📄 Read the full paper here: [NeuroNet-AD: A Multimodal Deep Learning Framework for Multiclass Alzheimer’s Disease Diagnosis](#)
+
+---
 ## Overview
 Alzheimer’s Disease (AD) is the most common form of dementia, severely impacting cognitive functions and quality of life. Early and accurate diagnosis, especially at the stage of *Mild Cognitive Impairment (MCI)*, is crucial for patient care and treatment development.
 
@@ -64,10 +68,6 @@ The NeuroNet-AD pipeline consists of four main modules:
 
 ---
 
-## Paper
-📄 Read the full paper here: [NeuroNet-AD: A Multimodal Deep Learning Framework for Multiclass Alzheimer’s Disease Diagnosis](#)
-
----
 
 ## Citation
 If you use this work, please cite:  
