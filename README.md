@@ -65,7 +65,7 @@ The NeuroNet-AD pipeline consists of four main modules:
 ---
 
 ## Paper
-📄 Read the full paper here: [NeuroNet-AD: A Multimodal Deep Learning Framework for Multiclass Alzheimer’s Disease Diagnosis](https://doi.org/10.3390/bioengineering1010000)
+📄 Read the full paper here: [NeuroNet-AD: A Multimodal Deep Learning Framework for Multiclass Alzheimer’s Disease Diagnosis](#)
 
 ---
 
