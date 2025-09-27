@@ -1,5 +1,4 @@
 
-# Reproducible subject-level partitioning + PyTorch Dataset (no slice leakage)
 
 import os
 import glob
@@ -17,29 +16,19 @@ from torch.utils.data import Dataset
 from PIL import Image
 
 
-# --------------------------
-# Reproducibility
-# --------------------------
+
 def set_seed(seed: int = 42):
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
-    # For full determinism (slower):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
 
-# --------------------------
-# Data loading utilities
-# --------------------------
+
 def load_subject_table(subjects_csv: str) -> pd.DataFrame:
-    """
-    Expected columns:
-        subject_id (str/int) - unique subject identifier
-        label (str/int)      - class label, e.g., 'NC', 'MCI', 'AD'
-        slice_dir (str)      - path to folder containing ALL slices for this subject
-    """
+ 
     df = pd.read_csv(subjects_csv)
     required = {"subject_id", "label", "slice_dir"}
     missing = required - set(df.columns)
@@ -49,10 +38,7 @@ def load_subject_table(subjects_csv: str) -> pd.DataFrame:
 
 
 def expand_to_slice_level(subjects_df: pd.DataFrame, patterns=(".png", ".jpg", ".jpeg")) -> pd.DataFrame:
-    """
-    Builds a slice-level dataframe with columns:
-        subject_id, label, slice_path
-    """
+
     rows = []
     for _, r in subjects_df.iterrows():
         s_id = r["subject_id"]
@@ -71,16 +57,11 @@ def expand_to_slice_level(subjects_df: pd.DataFrame, patterns=(".png", ".jpg", "
     return pd.DataFrame(rows)
 
 
-# --------------------------
-# Subject-level splitting
-# --------------------------
+
 def stratified_subject_holdout(subjects_df: pd.DataFrame,
                                test_size: float = 0.20,
                                seed: int = 42) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """
-    Create a 20% held-out TEST split *by subject* (stratified by label).
-    Returns: trainval_subjects_df, test_subjects_df
-    """
+
     # One row per subject
     sub_df = subjects_df[["subject_id", "label"]].drop_duplicates().reset_index(drop=True)
 
@@ -99,11 +80,7 @@ def stratified_subject_holdout(subjects_df: pd.DataFrame,
 def make_cv_folds(slice_df_trainval: pd.DataFrame,
                   n_splits: int = 5,
                   seed: int = 42) -> List[Tuple[pd.DataFrame, pd.DataFrame]]:
-    """
-    5-fold CV with StratifiedGroupKFold at the slice level,
-    using subjects as groups to prevent leakage.
-    Returns a list of (train_df, val_df) for each fold.
-    """
+
     y = slice_df_trainval["label"].values
     groups = slice_df_trainval["subject_id"].values
 
@@ -122,18 +99,12 @@ def make_cv_folds(slice_df_trainval: pd.DataFrame,
     return folds
 
 
-# --------------------------
-# Optional metadata handling
-# --------------------------
 def load_and_join_metadata(slice_df: pd.DataFrame,
                            metadata_csv: Optional[str],
                            feature_cols: Optional[List[str]] = None,
                            scaler: Optional[StandardScaler] = None
                            ) -> Tuple[pd.DataFrame, Optional[StandardScaler]]:
-    """
-    Joins per-subject metadata to each slice row (broadcast by subject_id).
-    Scales specified numeric feature columns.
-    """
+
     if metadata_csv is None:
         return slice_df, None
 
@@ -160,9 +131,7 @@ def load_and_join_metadata(slice_df: pd.DataFrame,
     return out, scaler
 
 
-# --------------------------
-# PyTorch Dataset
-# --------------------------
+
 @dataclass
 class DatasetConfig:
     image_size: Tuple[int, int] = (224, 224)  # resize (H, W)
@@ -170,10 +139,7 @@ class DatasetConfig:
 
 
 class MRISliceMetaDataset(Dataset):
-    """
-    Loads 2D slice images + optional numeric metadata.
-    Ensures labels are mapped to integer class indices.
-    """
+ 
     def __init__(self,
                  df: pd.DataFrame,
                  cfg: DatasetConfig,
@@ -229,9 +195,7 @@ class MRISliceMetaDataset(Dataset):
         return {"image": img, "meta": meta, "label": y, "subject_id": sid}
 
 
-# --------------------------
-# Example end-to-end usage
-# --------------------------
+
 if __name__ == "__main__":
     set_seed(42)
 
@@ -239,29 +203,28 @@ if __name__ == "__main__":
     SUBJECTS_CSV = "subjects.csv"      # subject_id,label,slice_dir
     METADATA_CSV = "metadata.csv"      # optional per-subject numeric features
 
-    # 1) Load subject table (one row per subject)
+
     subjects_df = load_subject_table(SUBJECTS_CSV)
 
-    # 2) Create 20% held-out TEST at subject level (stratified by label)
+
     trainval_subjects_df, test_subjects_df = stratified_subject_holdout(subjects_df, test_size=0.20, seed=42)
 
-    # 3) Expand to slice-level DataFrames
+
     trainval_slices_df = expand_to_slice_level(trainval_subjects_df)
     test_slices_df     = expand_to_slice_level(test_subjects_df)
 
-    # 4) Join metadata (optional; set METADATA_CSV=None to skip)
-    # Choose exactly the columns you want to use as meta features:
+
     feature_cols = ["Age", "MMSE", "FAQ_Score", "Global_CDR", "Weight"]  # edit to your feature names
     trainval_slices_df, scaler = load_and_join_metadata(trainval_slices_df, METADATA_CSV, feature_cols)
     test_slices_df, _          = load_and_join_metadata(test_slices_df, METADATA_CSV, feature_cols, scaler=scaler)
 
-    # 5) 5-fold StratifiedGroupKFold on TRAIN/VAL pool (grouped by subject_id, stratified by label)
+
     folds = make_cv_folds(trainval_slices_df, n_splits=5, seed=42)
 
-    # 6) Build datasets for one fold (example: fold 1)
+
     cfg = DatasetConfig(image_size=(224, 224), metadata_cols=feature_cols)
 
-    # Use a consistent label mapping across train/val/test
+
     all_labels = sorted(trainval_slices_df["label"].unique().tolist())
     label_to_idx = {lbl: i for i, lbl in enumerate(all_labels)}
 
@@ -270,19 +233,17 @@ if __name__ == "__main__":
         print("Train subjects:", train_df['subject_id'].nunique(), "   slices:", len(train_df))
         print("Val subjects:  ", val_df['subject_id'].nunique(),   "   slices:", len(val_df))
 
-        # Safety check: subject leakage
+
         overlap = set(train_df.subject_id.unique()) & set(val_df.subject_id.unique())
         assert len(overlap) == 0, "Leakage detected!"
 
         train_ds = MRISliceMetaDataset(train_df, cfg, label_to_idx=label_to_idx, transforms=None)
         val_ds   = MRISliceMetaDataset(val_df,   cfg, label_to_idx=label_to_idx, transforms=None)
 
-        # Example: get one sample
+
         sample = train_ds[0]
         print("Sample keys:", sample.keys(), " image:", sample["image"].shape, " meta:", sample["meta"].shape)
 
-    # 7) Build test dataset (completely unseen subjects)
-    # Map test labels using the same mapping; if test has unseen label (shouldn't), handle accordingly
     test_ds = MRISliceMetaDataset(test_slices_df, cfg, label_to_idx=label_to_idx, transforms=None)
     print("\nHeld-out TEST subjects:", test_slices_df['subject_id'].nunique(), " slices:", len(test_slices_df))
 
