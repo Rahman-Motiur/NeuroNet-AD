@@ -7,10 +7,7 @@ from .mgca import MGCA
 
 
 class ResLayerWithCBAM(nn.Module):
-    """
-    Wraps a torchvision ResNet layer (nn.Sequential of 2 BasicBlocks) to insert CBAM
-    between block0 and block1 and apply the residual-style combination described.
-    """
+ 
     def __init__(self, layer_seq: nn.Sequential, channels: int):
         super().__init__()
         assert isinstance(layer_seq, nn.Sequential) and len(layer_seq) >= 2, "Expected a layer with >=2 BasicBlocks"
@@ -28,10 +25,7 @@ class ResLayerWithCBAM(nn.Module):
 
 
 class MetaMLPEncoder(nn.Module):
-    """
-    Encodes numeric metadata into a token sequence [B, L, E].
-    If you have text strings, replace this encoder with a BERT-based one.
-    """
+   
     def __init__(self, in_dim: int, embed_dim: int, num_tokens: int = 16):
         super().__init__()
         self.num_tokens = num_tokens
