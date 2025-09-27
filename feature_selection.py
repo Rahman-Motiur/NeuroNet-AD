@@ -1,8 +1,4 @@
 
-"""
-Ensemble feature selection with majority voting for metadata fields.
-Matches the paper's description (RF, XGB, LGBM, ExtraTrees, AdaBoost).
-"""
 from typing import List, Tuple
 import numpy as np
 import pandas as pd
@@ -18,15 +14,7 @@ def ensemble_feature_selection(df_meta: pd.DataFrame,
                                target: pd.Series,
                                k: int = 5,
                                random_state: int = 42) -> Tuple[List[str], pd.DataFrame]:
-    """
-    Args:
-        df_meta: numeric metadata dataframe [N, D]
-        target: class labels [N]
-        k: number of top features to select
-    Returns:
-        top_features: list of top-k feature names
-        ranking_df: DataFrame with features and normalized voting scores
-    """
+
     features = df_meta.columns.tolist()
     X = df_meta.values
     y = target.values
@@ -46,7 +34,6 @@ def ensemble_feature_selection(df_meta: pd.DataFrame,
 
     votes = np.zeros(len(features), dtype=float)
 
-    # simple CV to stabilize importances
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=random_state)
     for name, clf in models.items():
         fold_imps = np.zeros(len(features))
@@ -58,14 +45,11 @@ def ensemble_feature_selection(df_meta: pd.DataFrame,
                 imp = np.zeros(len(features))
             fold_imps += imp
         fold_imps /= skf.get_n_splits()
-        # Convert to ranks (lower rank = more important)
         order = np.argsort(-fold_imps)  # descending
         ranks = np.empty_like(order)
         ranks[order] = np.arange(1, len(features) + 1)
-        # Weighted vote as 1/rank
         votes += 1.0 / ranks
 
-    # Normalize
     scores = votes / votes.sum()
     ranking = pd.DataFrame({"feature": features, "score": scores}).sort_values("score", ascending=False)
     top_features = ranking.head(k)["feature"].tolist()
