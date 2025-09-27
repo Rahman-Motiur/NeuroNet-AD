@@ -4,15 +4,7 @@ import torch.nn as nn
 
 
 class MGCA(nn.Module):
-    """
-    Meta Guided Cross Attention: image features (queries) attend to text/meta features (keys/values).
-    Implementation uses MultiheadAttention over tokens.
-    Inputs:
-        img: [B, C, H, W] -> we flatten to tokens along spatial dims or channels
-        txt: [B, L, E]     textual/meta tokens already embedded to E
-    Outputs:
-        img_out: [B, C, H, W] same shape as input img (residual fused)
-    """
+
     def __init__(self, img_channels: int, embed_dim: int, num_heads: int = 4, token_mode: str = "channels"):
         super().__init__()
         assert token_mode in ("channels", "spatial")
