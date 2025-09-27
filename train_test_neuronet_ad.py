@@ -26,8 +26,6 @@ from utils.metrics import classification_report_from_logits
 
 
 def get_transforms():
-    # Basic torch transforms without torchvision to avoid extra dependency for now.
-    # You can switch to torchvision transforms for flips/rotations if desired.
     return None
 
 
