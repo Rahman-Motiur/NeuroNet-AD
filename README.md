@@ -1,6 +1,5 @@
 # NeuroNet-AD: A Multimodal Deep Learning Framework for Multiclass Alzheimer’s Disease Diagnosis
 
-![Code Status](https://img.shields.io/badge/Code-Coming%20Soon-orange?style=for-the-badge)
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
